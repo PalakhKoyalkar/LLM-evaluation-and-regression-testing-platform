@@ -1,0 +1,80 @@
+:root {
+  font-family: system-ui, sans-serif;
+  color-scheme: light dark;
+  --border: #8884;
+  --muted: #8882;
+  --error: crimson;
+}
+
+body {
+  margin: 0;
+}
+
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: end;
+}
+
+.controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+}
+
+select,
+button {
+  font: inherit;
+  padding: 6px 10px;
+}
+
+.scroll {
+  overflow-x: auto;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 14px;
+}
+
+th,
+td {
+  border-bottom: 1px solid var(--border);
+  padding: 6px 8px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:hover,
+.selected {
+  background: var(--muted);
+}
+
+.status {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--muted);
+}
+
+.status.completed { background: #2a93; }
+.status.failed { background: #d333; }
+.status.running,
+.status.queued { background: #e903; }
+
+.error {
+  color: var(--error);
+}

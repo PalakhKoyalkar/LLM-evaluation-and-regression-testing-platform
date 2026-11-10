@@ -1,0 +1,54 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: eval
+      POSTGRES_PASSWORD: eval
+      POSTGRES_DB: eval
+    # Host port 5440 because a native Windows Postgres already answers on localhost:5432.
+    ports: ["5440:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eval"]
+      interval: 5s
+      retries: 10
+
+  redis:
+    image: redis:7
+    # Host port 6380 because 6379 is taken by another local stack; containers still use redis:6379.
+    ports: ["6380:6379"]
+
+  api:
+    build: ./backend
+    command: sh -c "alembic upgrade head && uvicorn app.api.main:app --host 0.0.0.0 --port 8000 --reload"
+    env_file: .env
+    environment: &backend-env
+      DATABASE_URL: postgresql+asyncpg://eval:eval@postgres:5432/eval
+      REDIS_URL: redis://redis:6379
+    # Host port 8010 because 8000 is taken by another local stack.
+    ports: ["8010:8000"]
+    volumes: ["./backend/app:/app/app", "./backend/migrations:/app/migrations"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_started }
+
+  worker:
+    build: ./backend
+    command: python -m app.worker
+    env_file: .env
+    environment: *backend-env
+    volumes: ["./backend/app:/app/app"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_started }
+
+  web:
+    build: ./web
+    environment:
+      API_URL: http://api:8000
+    ports: ["5173:5173"]
+    volumes: ["./web/src:/app/src"]
+    depends_on: [api]
+
+volumes:
+  pgdata:

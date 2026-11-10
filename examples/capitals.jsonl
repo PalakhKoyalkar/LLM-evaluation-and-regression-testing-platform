@@ -1,0 +1,5 @@
+{"input": {"country": "France"}, "expected_output": "Paris", "tags": ["easy"]}
+{"input": {"country": "Japan"}, "expected_output": "Tokyo", "tags": ["easy"]}
+{"input": {"country": "Australia"}, "expected_output": "Canberra", "tags": ["tricky"]}
+{"input": {"country": "Canada"}, "expected_output": "Ottawa", "tags": ["tricky"]}
+{"input": {"country": "Brazil"}, "expected_output": "Brasília", "tags": ["tricky"]}
